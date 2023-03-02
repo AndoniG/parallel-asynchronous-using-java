@@ -24,11 +24,11 @@ public class StreamExample {
 
     public static void main(String[] args) {
         List<String> namesList = DataSet.namesList();
-        StreamExample parallelStreamsExample = new StreamExample();
+        StreamExample streamsExample = new StreamExample();
 
         startTimer();
 
-        List<String> resultList = parallelStreamsExample.stringTransform(namesList);
+        List<String> resultList = streamsExample.stringTransform(namesList);
 
         log("resultList: " + resultList);
         timeTaken();
