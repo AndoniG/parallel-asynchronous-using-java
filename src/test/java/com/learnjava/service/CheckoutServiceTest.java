@@ -28,10 +28,11 @@ class CheckoutServiceTest {
         Cart cart = DataSet.createCart(6);
 
         // when
-        CheckoutResponse checkoutResponse = checkoutService.checkout(cart);
+        CheckoutResponse checkoutResponse = checkoutService.checkout(cart, false);
 
         // then
         assertEquals(CheckoutStatus.SUCCESS, checkoutResponse.getCheckoutStatus());
+        assertTrue(checkoutResponse.getFinalRate() > 0);
     }
 
     @Test
@@ -40,7 +41,7 @@ class CheckoutServiceTest {
         Cart cart = DataSet.createCart(6);
 
         // when
-        CheckoutResponse checkoutResponse = checkoutService.parallelCheckout(cart);
+        CheckoutResponse checkoutResponse = checkoutService.checkout(cart, true);
 
         // then
         assertEquals(CheckoutStatus.SUCCESS, checkoutResponse.getCheckoutStatus());
@@ -53,20 +54,7 @@ class CheckoutServiceTest {
         Cart cart = DataSet.createCart(cartSize);
 
         // when
-        CheckoutResponse checkoutResponse = checkoutService.parallelCheckout(cart);
-
-        // then
-        assertEquals(CheckoutStatus.FAILURE, checkoutResponse.getCheckoutStatus());
-    }
-
-    @Test
-    void checkout_25_items_in_parallel() {
-        // given
-        // Since the computer has 12 cores, this test will take +1000 ms.
-        Cart cart = DataSet.createCart(13);
-
-        // when
-        CheckoutResponse checkoutResponse = checkoutService.parallelCheckout(cart);
+        CheckoutResponse checkoutResponse = checkoutService.checkout(cart, true);
 
         // then
         assertEquals(CheckoutStatus.FAILURE, checkoutResponse.getCheckoutStatus());
