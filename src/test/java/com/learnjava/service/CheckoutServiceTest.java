@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.concurrent.ForkJoinPool;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CheckoutServiceTest {
@@ -47,6 +49,18 @@ class CheckoutServiceTest {
         assertEquals(CheckoutStatus.SUCCESS, checkoutResponse.getCheckoutStatus());
     }
 
+    @Test
+    void checkout_13_items_in_parallel() {
+        // given
+        Cart cart = DataSet.createCart(13);
+
+        // when
+        CheckoutResponse checkoutResponse = checkoutService.checkout(cart, true);
+
+        // then
+        assertEquals(CheckoutStatus.SUCCESS, checkoutResponse.getCheckoutStatus());
+    }
+
     @ParameterizedTest
     @ValueSource(ints = {13, 25, 36})
     void checkout_13_and_25_items_in_parallel(int cartSize) {
@@ -66,6 +80,16 @@ class CheckoutServiceTest {
 
         // when
         System.out.println("no of cores: " + Runtime.getRuntime().availableProcessors());
+
+        // then
+    }
+
+    @Test
+    void parallelism() {
+        // given
+
+        // when
+        System.out.println("no of cores: " + ForkJoinPool.getCommonPoolParallelism());
 
         // then
     }
