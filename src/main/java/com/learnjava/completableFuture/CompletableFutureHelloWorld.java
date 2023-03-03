@@ -16,6 +16,12 @@ public class CompletableFutureHelloWorld {
                 .thenApply(String::toUpperCase);
     }
 
+    public CompletableFuture<String> helloWorld_withSize(){
+        return CompletableFuture.supplyAsync(hws::helloWorld)
+                .thenApply(String::toUpperCase)
+                .thenApply(result -> result.length() + " - " + result);
+    }
+
 
     public static void main(String[] args) {
 

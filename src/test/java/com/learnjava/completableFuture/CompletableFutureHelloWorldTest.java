@@ -24,12 +24,26 @@ class CompletableFutureHelloWorldTest {
         // given
 
         // when
-        CompletableFuture completableFuture =  cfhw.helloWorld();
+        CompletableFuture<String> completableFuture =  cfhw.helloWorld();
 
         //then
         completableFuture
                 .thenAccept(result -> {
                     assertEquals("HELLO WORLD", result);
                 }).join();
+    }
+
+
+    @Test
+    void helloWorld_withSize(){
+        // given
+
+        // when
+        CompletableFuture<String> completableFuture = cfhw.helloWorld_withSize();
+
+        // then
+        completableFuture.thenAccept(result -> {
+            assertEquals("11 - HELLO WORLD", result);
+        }).join();
     }
 }
