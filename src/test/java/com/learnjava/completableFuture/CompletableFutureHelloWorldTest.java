@@ -24,7 +24,7 @@ class CompletableFutureHelloWorldTest {
         // given
 
         // when
-        CompletableFuture<String> completableFuture =  cfhw.helloWorld();
+        CompletableFuture<String> completableFuture = cfhw.helloWorld();
 
         //then
         completableFuture
@@ -35,7 +35,7 @@ class CompletableFutureHelloWorldTest {
 
 
     @Test
-    void helloWorld_withSize(){
+    void helloWorld_withSize() {
         // given
 
         // when
@@ -45,5 +45,27 @@ class CompletableFutureHelloWorldTest {
         completableFuture.thenAccept(result -> {
             assertEquals("11 - HELLO WORLD", result);
         }).join();
+    }
+
+    @Test
+    void helloWorld_approach1() {
+        // given
+
+        // when
+        String result = cfhw.helloWorld_approach1();
+
+        // then
+        assertEquals("hello world!", result);
+    }
+
+    @Test
+    void helloWorld_approach2() {
+        // given
+
+        // when
+        String result = cfhw.helloWorld_approach2();
+
+        // then
+        assertEquals("HELLO WORLD!", result);
     }
 }
