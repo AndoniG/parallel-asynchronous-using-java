@@ -8,6 +8,13 @@ import java.util.concurrent.CompletableFuture;
 import static com.learnjava.util.CommonUtil.delay;
 
 public class InventoryService {
+
+    public Inventory retrieveInventory(ProductOption productOption){
+        delay(500);
+        return Inventory.builder()
+                .count(2).build();
+    }
+
     public Inventory addInventory(ProductOption productOption) {
         delay(500);
         return Inventory.builder()

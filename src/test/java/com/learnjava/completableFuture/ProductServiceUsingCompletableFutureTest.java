@@ -1,6 +1,7 @@
 package com.learnjava.completableFuture;
 
 import com.learnjava.domain.Product;
+import com.learnjava.service.InventoryService;
 import com.learnjava.service.ProductInfoService;
 import com.learnjava.service.ReviewService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ class ProductServiceUsingCompletableFutureTest {
 
     private ProductInfoService pis;
     private ReviewService rs;
+    private InventoryService is;
     ProductServiceUsingCompletableFuture psucf;
 
 
@@ -23,7 +25,8 @@ class ProductServiceUsingCompletableFutureTest {
     void setUp() {
         pis = new ProductInfoService();
         rs = new ReviewService();
-        psucf = new ProductServiceUsingCompletableFuture(pis, rs);
+        is = new InventoryService();
+        psucf = new ProductServiceUsingCompletableFuture(pis, rs, is);
     }
 
     @Test
@@ -57,5 +60,41 @@ class ProductServiceUsingCompletableFutureTest {
 
         // then
         timeTaken();
+    }
+
+    @Test
+    void retrieveProductDetailsWithInventory() {
+        // given
+        String productId = "ABC123";
+
+        // when
+        Product product = psucf.retrieveProductDetailsWithInventory(productId);
+
+        // then
+        assertNotNull(product);
+        assertTrue(product.getProductInfo().getProductOptions().size() > 0);
+        product.getProductInfo().getProductOptions()
+                        .forEach(productOption -> {
+                            assertNotNull(productOption.getInventory());
+                        });
+        assertNotNull(product.getReview());
+    }
+
+    @Test
+    void retrieveProductDetailsWithInventory_approach2() {
+        // given
+        String productId = "ABC123";
+
+        // when
+        Product product = psucf.retrieveProductDetailsWithInventory_approach2(productId);
+
+        // then
+        assertNotNull(product);
+        assertTrue(product.getProductInfo().getProductOptions().size() > 0);
+        product.getProductInfo().getProductOptions()
+                .forEach(productOption -> {
+                    assertNotNull(productOption.getInventory());
+                });
+        assertNotNull(product.getReview());
     }
 }
