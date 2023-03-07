@@ -83,7 +83,7 @@ class CompletableFutureHelloWorldTest {
     }
 
     @Test
-    void helloWorld_4_async_calls(){
+    void helloWorld_4_async_calls() {
         // given
 
         // when
@@ -94,7 +94,7 @@ class CompletableFutureHelloWorldTest {
     }
 
     @Test
-    void helloWorld_thenCompose(){
+    void helloWorld_thenCompose() {
         // given
         startTimer();
 
@@ -107,5 +107,16 @@ class CompletableFutureHelloWorldTest {
         }).join();
 
         timeTaken();
+    }
+
+    @Test
+    void helloWorldMultipleAsync_customThreadPool() {
+        // given
+
+        // when
+        String result = cfhw.helloWorldMultipleAsync_customThreadPool();
+
+        // then
+        assertEquals("HELLO WORLD! HI COMPLETABLEFUTURE!", result);
     }
 }
