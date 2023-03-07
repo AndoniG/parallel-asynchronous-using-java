@@ -49,4 +49,38 @@ class ProductServiceUsingCompletableFutureExceptionTest {
         assertEquals(0, product.getReview().getNoOfReviews());
     }
 
+    @Test
+    void retrieveProductDetailsWithInventory_productInfoServiceError() {
+        // given
+        String productId = "ABC123";
+        when(productInfoService.retrieveProductInfo(any())).thenThrow(new RuntimeException("Exception occurred"));
+        when(reviewService.retrieveReviews(any())).thenCallRealMethod();
+
+        // then
+        assertThrows(RuntimeException.class, () ->
+                productServiceUsingCompletableFuture.retrieveProductDetailsWithInventory_approach2(productId));
+    }
+
+    @Test
+    void retrieveProductDetailsWithInventory_inventoryServiceError() {
+        // given
+        String productId = "ABC123";
+        when(productInfoService.retrieveProductInfo(any())).thenCallRealMethod();
+        when(reviewService.retrieveReviews(any())).thenCallRealMethod();
+        when(inventoryService.retrieveInventory(any())).thenThrow(new RuntimeException("Exception occurred"));
+
+        // when
+        Product product = productServiceUsingCompletableFuture.retrieveProductDetailsWithInventory_approach2(productId);
+
+        // then
+        assertNotNull(product);
+        assertTrue(product.getProductInfo().getProductOptions().size() > 0);
+        product.getProductInfo().getProductOptions()
+                .forEach(productOption -> {
+                    assertNotNull(productOption.getInventory());
+                    assertEquals(1, productOption.getInventory().getCount());
+                });
+        assertNotNull(product.getReview());
+        assertEquals(200, product.getReview().getNoOfReviews());
+    }
 }

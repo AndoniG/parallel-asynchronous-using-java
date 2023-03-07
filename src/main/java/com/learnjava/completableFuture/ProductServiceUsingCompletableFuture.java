@@ -100,6 +100,9 @@ public class ProductServiceUsingCompletableFuture {
 
         Product product = cfProductInfo
                 .thenCombine(cfReviews, (productInfo, review) -> new Product(productId, productInfo, review))
+                .whenComplete((tempProduct, e) -> {
+                    log("Inside WhenComplete: " + tempProduct + " and the excepton is " + e);
+                })
                 .join();
 
         stopWatch.stop();
@@ -123,6 +126,10 @@ public class ProductServiceUsingCompletableFuture {
                 .stream()
                 .map(productOption -> {
                     return CompletableFuture.supplyAsync(() -> inventoryService.retrieveInventory(productOption))
+                            .exceptionally( e -> {
+                                log("Handled the Exception for the Inventory: " + e.getMessage());
+                                return Inventory.builder().count(1).build();
+                            })
                             .thenApply(inventory -> {
                                 productOption.setInventory(inventory);
                                 return productOption;
