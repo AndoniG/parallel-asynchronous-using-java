@@ -2,6 +2,7 @@ package com.learnjava.completableFuture;
 
 import com.learnjava.service.HelloWorldService;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,9 +64,19 @@ public class CompletableFutureHelloWorld {
         });
 
         String helloWorld = hello
-                .thenCombine(world, (h, w) -> h + w)
-                .thenCombine(hiCompletableFuture, (previous, current) -> previous + current)
-                .thenApply(String::toUpperCase)
+                .thenCombine(world, (h, w) -> {
+                    log("thenCombine h/w");
+                    return h + w;
+                })
+                .thenCombine(hiCompletableFuture, (previous, current) -> {
+                    log("thenCombine previous/current");
+                    return previous + current;
+                })
+                .thenApply(s -> {
+                    log("thenApply");
+                    return s.toUpperCase();
+
+                })
                 .join();
 
         timeTaken();
@@ -104,6 +115,42 @@ public class CompletableFutureHelloWorld {
                 .thenCompose(hws::worldFuture);
     }
 
+    // This allows to keep the faster response
+    public String anyOf(){
+        // db
+        CompletableFuture<String> db = CompletableFuture.supplyAsync(() -> {
+            delay(1000);
+            log("Response from DB");
+            return "Hello World";
+        });
+
+        // rest
+        CompletableFuture<String> rest = CompletableFuture.supplyAsync(() -> {
+            delay(800);
+            log("Response from REST");
+            return "Hello World";
+        });
+
+
+        // soap
+        CompletableFuture<String> soap = CompletableFuture.supplyAsync(() -> {
+            delay(3000);
+            log("Response from SOAP");
+            return "Hello World";
+        });
+
+        List<CompletableFuture<String>> cfList = List.of(db, rest, soap);
+
+        CompletableFuture<Object> cfAnyOf = CompletableFuture.anyOf(cfList.toArray(new CompletableFuture[cfList.size()]));
+
+        String result = (String) cfAnyOf.thenApply( v -> {
+            if(v instanceof String) return v;
+            return null;
+        }).join();
+
+        return result;
+    }
+
     public String helloWorldMultipleAsync_customThreadPool() {
         startTimer();
 
@@ -139,6 +186,35 @@ public class CompletableFutureHelloWorld {
     }
 
 
+    public String helloWorldMultipleAsyncCalls_async() {
+        startTimer();
+        CompletableFuture<String> hello = CompletableFuture.supplyAsync(hws::hello);
+        CompletableFuture<String> world = CompletableFuture.supplyAsync(hws::world);
+        CompletableFuture<String> hiCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            delay(5000);
+            return " Hi CompletableFuture!";
+        });
+
+        String helloWorld = hello
+                .thenCombineAsync(world, (h, w) -> {
+                    log("thenCombine h/w");
+                    return h + w;
+                })
+                .thenCombineAsync(hiCompletableFuture, (previous, current) -> {
+                    log("thenCombine previous/current");
+                    return previous + current;
+                })
+                .thenApplyAsync(s -> {
+                    log("thenApply");
+                    return s.toUpperCase();
+
+                })
+                .join();
+
+        timeTaken();
+
+        return helloWorld;
+    }
 
     public static void main(String[] args) {
 

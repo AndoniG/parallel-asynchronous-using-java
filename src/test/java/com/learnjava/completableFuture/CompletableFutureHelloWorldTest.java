@@ -119,4 +119,26 @@ class CompletableFutureHelloWorldTest {
         // then
         assertEquals("HELLO WORLD! HI COMPLETABLEFUTURE!", result);
     }
+
+    @Test
+    void helloWorldMultipleAsyncCalls_async() {
+        // given
+
+        // when
+        String result = cfhw.helloWorldMultipleAsyncCalls_async();
+
+        // then
+        assertEquals("HELLO WORLD! HI COMPLETABLEFUTURE!", result);
+    }
+
+    @Test
+    void anyOf() {
+        // given
+
+        // when
+        String result = cfhw.anyOf();
+
+        // then
+        assertEquals("Hello World", result);
+    }
 }
